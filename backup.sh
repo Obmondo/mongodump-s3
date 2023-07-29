@@ -36,7 +36,7 @@ fi
 
 # Upload backup
 
-if [ $BACKUP_PROVIDER -eq "s3" ]; then
+if [ $BACKUP_PROVIDER = "s3" ]; then
   aws $ENDPOINT s3 cp "${LOCAL_BACKUP_ROOT_FOLDER}/${BACKUP_NAME}" "s3://${S3_BUCKET}/${S3_PATH}/${BACKUP_NAME}"
   status=$?
   echo $status
@@ -45,7 +45,7 @@ if [ $BACKUP_PROVIDER -eq "s3" ]; then
     notify 1
     exit 1
   fi
-elif [ $BACKUP_PROVIDER -eq "azure" ]; then
+elif [ $BACKUP_PROVIDER = "azure" ]; then
 
   az storage blob upload --file "${LOCAL_BACKUP_ROOT_FOLDER}/${BACKUP_NAME}" --account-name "$AZURE_STORAGE_ACCOUNT_NAME" --account-key "$AZURE_STORAGE_ACCOUNT_KEY" -c "$AZURE_STORAGE_CONTAINER"
   status=$?
