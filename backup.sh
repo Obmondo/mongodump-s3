@@ -45,9 +45,9 @@ if [ $BACKUP_PROVIDER = "s3" ]; then
     notify 1
     exit 1
   fi
-elif [ $BACKUP_PROVIDER = "azure" ]; then
+elif [ $BACKUP_PROVIDER = "az" ]; then
 
-  az storage blob upload --file "${LOCAL_BACKUP_ROOT_FOLDER}/${BACKUP_NAME}" --account-name "$AZURE_STORAGE_ACCOUNT_NAME" --account-key "$AZURE_STORAGE_ACCOUNT_KEY" -c "$AZURE_STORAGE_CONTAINER"
+  az storage blob upload --file "${LOCAL_BACKUP_ROOT_FOLDER}/${BACKUP_NAME}" --account-name "${AZURE_STORAGE_ACCOUNT_NAME}" --account-key "${AZURE_STORAGE_ACCOUNT_KEY}" -c "${AZURE_STORAGE_CONTAINER}" --name "${AZ_PATH}/${BACKUP_NAME}"
   status=$?
   echo $status
   if [ "${status}" != "0" ]; then
