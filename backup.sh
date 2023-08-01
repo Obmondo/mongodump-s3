@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+set -x
 
 OPTIONS=`python3 /usr/local/bin/mongouri`
 OPTIONS="$OPTIONS $EXTRA_OPTIONS"
@@ -47,7 +48,7 @@ if [ $BACKUP_PROVIDER = "s3" ]; then
   fi
 elif [ $BACKUP_PROVIDER = "az" ]; then
 
-  az storage blob upload --file "${LOCAL_BACKUP_ROOT_FOLDER}/${BACKUP_NAME}" --account-name "${AZURE_STORAGE_ACCOUNT_NAME}" --account-key "${AZURE_STORAGE_ACCOUNT_KEY}" -c "${AZURE_STORAGE_CONTAINER}" --name "${AZ_PATH}/${BACKUP_NAME}"
+  az storage blob upload --file "${LOCAL_BACKUP_ROOT_FOLDER}/${BACKUP_NAME}" --account-name "${AZURE_STORAGE_ACCOUNT_NAME}" --account-key "${AZURE_STORAGE_ACCOUNT_KEY}" -c "${AZURE_STORAGE_CONTAINER}" --name "${AZ_BACKUP_PATH}/${BACKUP_NAME}"
   status=$?
   echo $status
   if [ "${status}" != "0" ]; then
