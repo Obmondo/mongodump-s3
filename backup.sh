@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+set -x
 
 OPTIONS=`python3 /usr/local/bin/mongouri`
 OPTIONS="$OPTIONS $EXTRA_OPTIONS"
@@ -35,13 +36,28 @@ if [ ! -z "$AWS_S3_ENDPOINT" ]; then
 fi
 
 # Upload backup
-aws $ENDPOINT s3 cp "${LOCAL_BACKUP_ROOT_FOLDER}/${BACKUP_NAME}" "s3://${S3_BUCKET}/${S3_PATH}/${BACKUP_NAME}"
-status=$?
-echo $status
-if [ "${status}" != "0" ]; then
-  echo "ERROR: AWS Upload failed."
-  notify 1
-  exit 1
+
+if [ $BACKUP_PROVIDER = "s3" ]; then
+  aws $ENDPOINT s3 cp "${LOCAL_BACKUP_ROOT_FOLDER}/${BACKUP_NAME}" "s3://${S3_BUCKET}/${S3_PATH}/${BACKUP_NAME}"
+  status=$?
+  echo $status
+  if [ "${status}" != "0" ]; then
+    echo "ERROR: AWS Upload failed."
+    notify 1
+    exit 1
+  fi
+elif [ $BACKUP_PROVIDER = "az" ]; then
+
+  az storage blob upload --file "${LOCAL_BACKUP_ROOT_FOLDER}/${BACKUP_NAME}" --account-name "${AZURE_STORAGE_ACCOUNT_NAME}" --account-key "${AZURE_STORAGE_ACCOUNT_KEY}" -c "${AZURE_STORAGE_CONTAINER}" --name "${AZ_BACKUP_PATH}/${BACKUP_NAME}"
+  status=$?
+  echo $status
+  if [ "${status}" != "0" ]; then
+    echo "ERROR: AZURE Upload failed."
+    notify 1
+    exit 1
+  fi
+else 
+  echo "No logical backup provider is given"
 fi
 
 notify 0
